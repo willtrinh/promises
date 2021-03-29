@@ -58,7 +58,17 @@ var readFileAndMakeItFunny = function(filePath, callback) {
   });
 };
 
-var readFileAndMakeItFunnyAsync; // TODO
+var readFileAndMakeItFunnyAsync = function(filePath, callback) {
+  return new Promise((resolve, reject) => {
+    readFileAndMakeItFunny(filePath, (result) => {
+      if (result instanceof Error) {
+        reject(result);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
 
 // Export these functions so we can test them and reuse them in later exercises
 module.exports = {
