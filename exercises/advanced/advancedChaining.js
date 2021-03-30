@@ -28,19 +28,12 @@ var lib = require('../../lib/advancedChainingLib');
 // to give it the `Predict on Public and Custom Models` scope. When your key
 // is ready, copy and add it to the `advancedChainingLib.js` file.
 
-var searchCommonConceptsFromGitHubProfiles = function (githubHandles) {
-  let p = Promise.all(githubHandles.map(githubHandle => lib.getGitHubProfile(githubHandle)));
+var searchCommonConceptsFromGitHubProfiles = (githubHandles) =>
+  Promise.all(githubHandles.map(githubHandle => lib.getGitHubProfile(githubHandle)))
+    .then((users) => users.map((user) => user.avatarUrl))
+    .then((avatarUrls) => avatarUrls.map((url) => lib.predictImage(url)))
+    .then(Promise.all).then(lib.getIntersection);
 
-  p = p.then((users) => users.map((user) => user.avatarUrl));
-
-  p = p.then((avatarUrls) => avatarUrls.map((url) => lib.predictImage(url)));
-
-  // p.then(x => Promise.all(x).then(x => console.log('*****', x)));
-
-  p = Promise.all(p);
-
-  return p.then(lib.getIntersection);
-};
 
 // Export these functions so we can unit test them
 module.exports = {
